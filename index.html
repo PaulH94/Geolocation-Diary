@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<style type="text/css">
+
+	#map{
+		margin-left:auto;
+		margin-right:auto;
+		width:100%;
+		height:380px;
+	}
+	#box{
+		margin-left:auto;
+		margin-right:auto;
+	}
+	.Activity{
+		text-align: center;
+	}
+</style>
+
+
+</head>
+<body>
+
+	<nav class= "navbar navbar-inverse navbar-static-top">
+		<div class = "container">
+			<div class = "navbar-header">
+				<a class = "navbar-brand">Geo-D</a>
+			</div>
+			<ul class = "nav navbar-nav">
+				<li class = "active"><a href= "#">home</a></li>
+				<li><a href = "#">about</a></li>
+				<li><a href = "/contact.html">contact</a></li>
+			</ul>
+			<ul class = "nav navbar-nav navbar-right">
+				<!--<li><a href= "#">register</a></li>-->
+				<li><a href = "/signout.html">Sign Out</a></li>
+			</ul>
+		</div>
+	</nav>
+	<div id="title"></div>
+	<div id="map"></div>
+	<br>
+	<div class="container">
+	<!--<form action="/new" method="post">
+		<label class= "col-sm-3 control-label"></label>
+		<label class= "col-sm-1 control-label">Notes: </label>
+		<textarea rows="4" cols="50" placeholder = "Write Something...."></textarea>
+		Message:<br>		
+		<input type="text" name="message">
+		<br>
+		<input type="submit" value="Submit">
+	</form>-->
+		<p>Leave a comment here</p>
+		<input type="text" id="message">
+		<button onclick="fun()">submit</button>
+	</div>
+	<br>
+	<div class = "Activity"><p><i>Recent Activity</i></p></div>
+	<div class="container">
+		<div id="comment">No comment</div>
+	</div>
+<footer>
+
+</footer>
+<script>
+
+	var map;
+	var com = []
+    	function initMap() {
+		var myCenter=new google.maps.LatLng(45.5231,-122.6765);
+        	map = new google.maps.Map(document.getElementById('map'), {
+        	  center: myCenter,//{lat: 0, lng: 0},
+        	  zoom: 13
+        });
+
+        //var infoWindow = new google.maps.InfoWindow({map: map});
+
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+            map.setCenter(pos);
+          }, function() {
+
+	    alert("Something is wring");
+          });
+        } else {
+          // Browser doesn't support Geolocation
+	    alert("Browser said no no to geo");
+          }
+      	}
+
+	function fun(){
+		var curr;
+		var d = new Date();
+		var day = d.getTime();
+		var now = tstamp(day);
+		if (navigator.geolocation) {
+          	navigator.geolocation.getCurrentPosition(function(position) {
+			curr = {
+        	      		lat: position.coords.latitude,
+        	      		lng: position.coords.longitude
+            		};
+			console.log(curr);
+			currentLat = parseFloat(curr.lat);
+			var yup = $("#message").val()
+			yup = "Location: ("+position.coords.latitude +", "+position.coords.longitude+") <br>"+yup+" at "+now;
+			com.push(yup);
+		//com.join('<br>');
+		
+			var dope = '';
+			for(var i = 0; i<com.length; ++i){
+				dope = dope +com[i] + '<br>';
+			};
+			$("#comment").html(dope);
+			//currentLng = position.coords.longitude;
+			var marker=new google.maps.Marker({
+				position:curr,
+				animation: google.maps.Animation.DROP
+			});
+			marker.setMap(map);
+			//infoWindow.setPosition(curr);
+			var infowindow = new google.maps.InfoWindow({
+				content:$("#message").val()
+			});
+			google.maps.event.addListener(marker, 'click', function() {
+				infowindow.open(map,marker);
+			});
+			//loc = curr;
+		  });
+		} 
+
+	}
+
+	function tstamp(epoch){
+		var d = new Date(epoch)
+		var y = d.getFullYear();
+		var mo = d.getMonth()+1;
+		var da = d.getDate();
+		var h = d.getHours();
+		var m = d.getMinutes();
+		var s =d.getSeconds();
+		return y+'.'+('00'+mo).slice(-2)+'.'+('00' + da).slice(-2)+' '
+					+('00'+h).slice(-2)+':'+('00'+m).slice(-2);
+	}
+</script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=[THE KEY]=initMap">
+    </script>
+</body>
+</html>
