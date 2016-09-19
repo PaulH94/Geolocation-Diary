@@ -122,7 +122,7 @@
 		//com.join('<br>');
 		
 			var dope = '';
-			for(var i = 0; i<com.length; ++i){
+			for(var i = com.length-1; i>-1; --i){
 				dope = dope +com[i] + '<br>';
 			};
 			$("#comment").html(dope);
